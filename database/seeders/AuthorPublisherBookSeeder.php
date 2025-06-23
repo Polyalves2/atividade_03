@@ -11,7 +11,8 @@ use App\Models\Publisher;
 
 class AuthorPublisherBookSeeder extends Seeder
 {
-    public function run(): void
+    // public function run(): void
+    public function run()
     {
         // Gera 100 autores, cada um com 10 livros
         Author::factory(100)->create()->each(function ($author) {

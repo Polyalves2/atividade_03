@@ -9,7 +9,8 @@ use Faker\Factory as FakerFactory;
 
 class DatabaseSeeder extends Seeder
 {
-    public function run(): void
+    // public function run(): void
+    public function run()
     {
         $this->call([
             CategorySeeder::class,
@@ -18,4 +19,3 @@ class DatabaseSeeder extends Seeder
         ]);
     }
 }
-

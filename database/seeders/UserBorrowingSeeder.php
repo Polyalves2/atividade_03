@@ -21,5 +21,3 @@ class UserBorrowingSeeder extends Seeder
         });
     } 
 }
-
-

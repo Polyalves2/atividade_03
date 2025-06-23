@@ -8,7 +8,8 @@ use App\Models\Category;
 
 class CategorySeeder extends Seeder
 {
-    public function run(): void
+    // public function run(): void
+    public function run()
     {
         $categories = [
             'Ficção',
