@@ -7,7 +7,8 @@ use Illuminate\Support\Facades\Schema;
 // return new class extends Migration
 class CreatePublishersTable extends Migration
 {
-    public function up(): void
+    // public function up(): void
+    public function up()
     {
         Schema::create('publishers', function (Blueprint $table) {
             $table->id();
@@ -17,7 +18,8 @@ class CreatePublishersTable extends Migration
         });
     }
 
-    public function down(): void
+    // public function down(): void
+    public function down()
     {
         Schema::dropIfExists('publishers');
     }
