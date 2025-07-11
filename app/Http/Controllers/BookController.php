@@ -72,9 +72,19 @@ class BookController extends Controller
             'publisher_id' => 'required|exists:publishers,id',
             'author_id' => 'required|exists:authors,id',
             'category_id' => 'required|exists:categories,id',
+            'image' => 'file|image'
         ]);
 
-        $book->update($request->all());
+        $path = null;
+
+        if($request->hasFile('image')) {
+            $path = $request->file('image')->store('books', 'public');
+        }
+        
+        $book->update([
+            ...$request->all(),
+            'image' => $path,
+        ]);
 
         return redirect()->route('books.index')->with('success', 'Livro atualizado com sucesso.');
     }

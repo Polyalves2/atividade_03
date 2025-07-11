@@ -17,6 +17,8 @@ return new class extends Migration
             $table->foreignId('publisher_id')->onDelete('cascade');
             $table->integer('published_year')->nullable();
             $table->timestamps();
+            $table->string("image")->nullable();
+            
         });
     }
 

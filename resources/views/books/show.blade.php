@@ -24,6 +24,10 @@
                     {{ $book->category->name }}
                 </a>
             </p>
+            <p>
+                <strong>capa:</strong> <br>
+                <img src="/storage/{{ $book->image }}" alt="capa do livro" width="512gitpx">
+            </p>
         </div>
     </div>
 
