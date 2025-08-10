@@ -39,8 +39,8 @@
                                 <tr>
                                     <td>{{ $book->id }}</td>
                                     <td>
-                                        @if($book->image_path)
-                                            <img src="{{ asset('storage/' . $book->image_path) }}" 
+                                        @if($book->image_url)
+                                            <img src="{{ $book->image_url }}" 
                                                  class="img-thumbnail" 
                                                  alt="Capa de {{ $book->title }}"
                                                  style="width: 50px; height: 70px; object-fit: cover;">

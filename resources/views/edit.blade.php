@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="my-4">Editar Livro</h1>
 
-    <form action="{{ route('books.update', $book) }}" method="POST">
+    <form action="{{ route('books.update', $book) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="mb-3">
@@ -68,8 +68,37 @@
             @enderror
         </div>
 
+        <div class="mb-3">
+            <label for="image" class="form-label">Capa do Livro</label>
+            @if($book->image)
+                <div class="mb-2">
+                    <img src="{{ asset('storage/livros/'.$book->image) }}?v={{ time() }}" id="preview-image" style="max-height: 200px;" class="img-thumbnail">
+                </div>
+            @endif
+            <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
+            @error('image')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
+
         <button type="submit" class="btn btn-success">Atualizar</button>
         <a href="{{ route('books.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script>
+    // Script para pré-visualizar a imagem antes de enviar
+    document.getElementById('image').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('preview-image').src = e.target.result;
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
 @endsection

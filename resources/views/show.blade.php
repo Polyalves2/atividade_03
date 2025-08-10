@@ -14,8 +14,8 @@
         <div class="col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body p-3 text-center">
-                    @if($book->image_path)
-                        <img src="{{ asset('storage/' . $book->image_path) }}" 
+                    @if($book->image_url)
+                        <img src="{{ $book->image_url }}" 
                              class="img-fluid rounded" 
                              alt="Capa de {{ $book->title }}"
                              style="max-height: 400px; width: auto;">
