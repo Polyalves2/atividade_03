@@ -9,7 +9,14 @@ class Book extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['title', 'author_id', 'category_id', 'publisher_id', 'published_year'];
+    protected $fillable = [
+        'title', 
+        'author_id', 
+        'category_id', 
+        'publisher_id', 
+        'published_year',
+        'image_path'
+    ];
 
     public function author()
     {
@@ -30,8 +37,24 @@ class Book extends Model
     {
         return $this->belongsToMany(User::class, 'borrowings')
                     ->withPivot('id', 'borrowed_at', 'returned_at')
-                    ->withTimestamps();                    
+                    ->withTimestamps();
     }
-        
-}
 
+    public function borrowings()
+    {
+        return $this->hasMany(Borrowing::class);
+    }
+
+    public function getImageUrlAttribute()
+    {
+        if (!$this->image_path) {
+            return asset('images/default-book.jpg');
+        }
+        
+        if (str_starts_with($this->image_path, 'http')) {
+            return $this->image_path;
+        }
+        
+        return asset('storage/' . $this->image_path);
+    }
+}

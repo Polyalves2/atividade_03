@@ -11,18 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-        $table->integer('published_year')->nullable();
-        });
+        if (!Schema::hasColumn('books', 'published_year')) {
+            Schema::table('books', function (Blueprint $table) {
+                $table->integer('published_year')->nullable();
+            });
+        }
     }
-
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            //
-        });
+        if (Schema::hasColumn('books', 'published_year')) {
+            Schema::table('books', function (Blueprint $table) {
+                $table->dropColumn('published_year');
+            });
+        }
     }
 };

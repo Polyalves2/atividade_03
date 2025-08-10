@@ -4,7 +4,7 @@
 <div class="container">
     <h1 class="my-4">Adicionar Livro (Com ID)</h1>
 
-    <form action="{{ route('books.store.id') }}" method="POST">
+    <form action="{{ route('books.store.id') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="mb-3">
             <label for="title" class="form-label">Título</label>
@@ -44,6 +44,18 @@
                     {{ $message }}
                 </div>
             @enderror
+        </div>
+
+        <!-- Campo de upload de imagem adicionado -->
+        <div class="mb-3">
+            <label for="image_path" class="form-label">Capa do Livro</label>
+            <input type="file" class="form-control @error('image_path') is-invalid @enderror" id="image_path" name="image_path" accept="image/jpeg, image/png">
+            @error('image_path')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+            <small class="text-muted">Formatos aceitos: JPEG, PNG (max 2MB)</small>
         </div>
 
         <button type="submit" class="btn btn-success">Salvar</button>
