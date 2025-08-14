@@ -31,7 +31,7 @@ class HomeController extends Controller
 
         // Dados específicos do usuário (se não for admin)
         $userBorrowings = [];
-        if (!$user->isAdmin()) {
+        if (!$user->hasRole('admin')) {
             $userBorrowings = $user->borrowings()
                 ->with('book')
                 ->whereNull('returned_at')
@@ -48,7 +48,7 @@ class HomeController extends Controller
 
         // Empréstimos recentes (apenas para admin)
         $recentBorrowings = [];
-        if ($user->isAdmin()) {
+        if ($user->hasRole('admin')) {
             $recentBorrowings = Borrowing::with(['user', 'book'])
                 ->orderBy('created_at', 'desc')
                 ->take(5)

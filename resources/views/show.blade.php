@@ -10,11 +10,11 @@
     </div>
 
     <div class="row g-4">
-        <!-- Book Cover Column -->
+        <!-- Coluna da Capa -->
         <div class="col-lg-4">
             <div class="card shadow-sm h-100">
                 <div class="card-body p-3 text-center">
-                    @if($book->image_url)
+                    @if(!empty($book->image_url))
                         <img src="{{ $book->image_url }}" 
                              class="img-fluid rounded" 
                              alt="Capa de {{ $book->title }}"
@@ -29,11 +29,11 @@
             </div>
         </div>
 
-        <!-- Book Details Column -->
+        <!-- Coluna dos Detalhes -->
         <div class="col-lg-8">
             <div class="card shadow-sm h-100">
                 <div class="card-header bg-primary text-white py-3">
-                    <h2 class="h5 mb-0">{{ $book->title }}</h2>
+                    <h2 class="h5 mb-0">{{ $book->title ?? 'Título não informado' }}</h2>
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
@@ -41,41 +41,56 @@
                         <ul class="list-unstyled">
                             <li class="mb-2">
                                 <strong class="d-block text-muted small">Autor</strong>
-                                <a href="{{ route('authors.show', $book->author->id) }}" class="text-decoration-none">
-                                    {{ $book->author->name }}
-                                </a>
+                                @if($book->author)
+                                    <a href="{{ route('authors.show', $book->author->id) }}" class="text-decoration-none">
+                                        {{ $book->author?->name ?? 'Não informado' }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">Não informado</span>
+                                @endif
                             </li>
                             <li class="mb-2">
                                 <strong class="d-block text-muted small">Editora</strong>
-                                <a href="{{ route('publishers.show', $book->publisher->id) }}" class="text-decoration-none">
-                                    {{ $book->publisher->name }}
-                                </a>
+                                @if($book->publisher)
+                                    <a href="{{ route('publishers.show', $book->publisher->id) }}" class="text-decoration-none">
+                                        {{ $book->publisher?->name ?? 'Não informado' }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">Não informado</span>
+                                @endif
                             </li>
                             <li class="mb-2">
                                 <strong class="d-block text-muted small">Categoria</strong>
-                                <a href="{{ route('categories.show', $book->category->id) }}" class="text-decoration-none">
-                                    {{ $book->category->name }}
-                                </a>
+                                @if($book->category)
+                                    <a href="{{ route('categories.show', $book->category->id) }}" class="text-decoration-none">
+                                        {{ $book->category?->name ?? 'Não informado' }}
+                                    </a>
+                                @else
+                                    <span class="text-muted">Não informado</span>
+                                @endif
                             </li>
-                            @if($book->published_year)
+                            @if(!empty($book->published_year))
                             <li class="mb-2">
                                 <strong class="d-block text-muted small">Ano de Publicação</strong>
                                 <span>{{ $book->published_year }}</span>
                             </li>
                             @endif
+                            @if(!empty($book->isbn))
+                            <li class="mb-2">
+                                <strong class="d-block text-muted small">ISBN</strong>
+                                <span>{{ $book->isbn }}</span>
+                            </li>
+                            @endif
                         </ul>
                     </div>
 
-                    <!-- Additional sections can be added here -->
-                    <!-- Example: Description section -->
-                    @if($book->description)
+                    @if(!empty($book->description))
                     <div class="mb-4">
                         <h3 class="h5 mb-3 text-primary">Sinopse</h3>
                         <p class="text-muted">{{ $book->description }}</p>
                     </div>
                     @endif
 
-                    <!-- Action Buttons -->
                     <div class="d-flex flex-wrap gap-2 pt-3 border-top">
                         <a href="{{ route('books.edit', $book->id) }}" class="btn btn-warning px-3">
                             <i class="bi bi-pencil me-1"></i> Editar

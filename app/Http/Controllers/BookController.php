@@ -104,20 +104,22 @@ class BookController extends Controller
                ->with('success', 'Livro atualizado com sucesso.');
     }
     
-    /**
-     * Exibe os detalhes de um livro
-     *
-     * @param  \App\Models\Book  $book
-     * @return \Illuminate\View\View
-     */
-    public function show(Book $book)
-    {
-        return view('books.show', [
-            'book' => $book->load(['author', 'publisher', 'category']),
-            'users' => User::orderBy('name')->get()
-        ]);
-    }
-    
+/**
+ * Exibe os detalhes de um livro
+ *
+ * @param  \App\Models\Book  $book
+ * @return \Illuminate\View\View
+ */
+public function show(Book $book)
+{
+    // Garante que as relações sejam carregadas
+    $book->load(['author', 'publisher', 'category']);
+
+    return view('books.show', [
+        'book' => $book,
+        'users' => User::orderBy('name')->get()
+    ]);
+}    
     /**
      * Lista todos os livros
      *
