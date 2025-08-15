@@ -2,30 +2,33 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
-    // public function run(): void
     public function run()
     {
+        // Limpa a tabela e reinicia o auto-increment
+        DB::table('categories')->truncate();
+
         $categories = [
             'Ficção',
-            'Não-ficção',
+            'Não Ficção',
+            'Terror',
+            'Romance',
             'Fantasia',
-            'Ciência',
             'Biografia',
             'História',
-            'Tecnologia',
-            'Arte',
-            'Culinária',
-            'Viagem'
+            'Infantil'
         ];
 
+        // Popula novamente
         foreach ($categories as $category) {
-            Category::create(['name' => $category]);
+            Category::create([
+                'name' => $category
+            ]);
         }
     }
 }

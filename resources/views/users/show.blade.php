@@ -10,7 +10,19 @@
             <p><strong>Nome:</strong> {{ $user->name ?? 'Não informado' }}</p>
             <p><strong>Email:</strong> {{ $user->email ?? 'Não informado' }}</p>
             <p><strong>Criado em:</strong> {{ $user->created_at?->format('d/m/Y H:i') ?? 'N/A' }}</p>
-            <p><strong>Role:</strong> {{ $user->roles?->pluck('name')->implode(', ') ?? 'Nenhum atribuído' }}</p>
+
+            @php
+                $roleName = $user->roles->first()?->name;
+            @endphp
+            <p><strong>Role:</strong>
+                @if($roleName === 'admin')
+                    Admin
+                @elseif($roleName === 'bibliotecario')
+                    Bibliotecário
+                @else
+                    Cliente
+                @endif
+            </p>
         </div>
     </div>
 

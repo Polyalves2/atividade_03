@@ -48,3 +48,15 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/users/roles', [UserController::class, 'showRoleEditor'])->name('admin.roles');
     Route::patch('/users/update-roles', [UserController::class, 'updateRoles'])->name('users.updateRoles');
 });
+
+// Rotas para empréstimos em português
+Route::resource('emprestimos', EmprestimoController::class)->only([
+    'index', 'create', 'store'
+]);
+
+Route::post('emprestimos/{emprestimo}/devolver', [EmprestimoController::class, 'devolver'])
+    ->name('emprestimos.devolver');
+
+Route::post('emprestimos/{emprestimo}/devolver', [EmprestimoController::class, 'devolver'])
+    ->name('emprestimos.devolver');
+    

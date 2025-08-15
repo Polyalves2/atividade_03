@@ -51,4 +51,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\Borrowing::class);
     }
+
+    public function emprestimos()
+    {
+        return $this->hasMany(Emprestimo::class);
+    }
+
 }

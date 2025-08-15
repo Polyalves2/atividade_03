@@ -28,15 +28,19 @@
                 <td>{{ $user->id }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                <td>{{ ucfirst($user->getRoleNames()->first() ?? 'Sem role') }}</td>
-                <td>
+                <td>{{ ucfirst($user->getRoleNames()->first() ?? 'admin') }}</td>
+                <td class="d-flex gap-1">
                     <a href="{{ route('users.show', $user->id) }}" class="btn btn-info btn-sm">Visualizar</a>
                     <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Editar</a>
 
-                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline-block" onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
+                    {{-- Botão excluir visível sempre --}}
+                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" style="display:inline-block" 
+                        onsubmit="return confirm('Tem certeza que deseja excluir este usuário?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm">Excluir</button>
+                        <button type="submit" class="btn btn-danger btn-sm">
+                            Excluir
+                        </button>
                     </form>
                 </td>
             </tr>

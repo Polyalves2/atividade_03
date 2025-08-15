@@ -2,21 +2,29 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Faker\Factory as FakerFactory;
 
 class DatabaseSeeder extends Seeder
 {
-    // public function run(): void
     public function run()
     {
-        FakerFactory::create()->unique(true);
         $this->call([
+            // 1. Configurações básicas do sistema
+            RolesAndPermissionsSeeder::class,
+            
+            // 2. Tabelas independentes
             CategorySeeder::class,
-            AuthorPublisherBookSeeder::class,
-            UserBorrowingSeeder::class, // Novo seeder adicionado aqui
+            AuthorSeeder::class,
+            PublisherSeeder::class,
+            
+            // 3. Usuários
+            // UserSeeder::class,
+            
+            // 4. Livros (dependem de categorias, autores e editoras)
+            BookSeeder::class,
+            
+            // 5. Empréstimos (dependem de usuários e livros)
+            UserBorrowingSeeder::class
         ]);
     }
 }

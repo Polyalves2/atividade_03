@@ -61,7 +61,7 @@ class UserController extends Controller
 
             DB::commit();
 
-            // Redireciona diretamente para a lista de usuários
+            // Redireciona para a lista de usuários
             return redirect()->route('users.index')
                 ->with('success', 'Usuário atualizado com sucesso!');
 
@@ -71,4 +71,44 @@ class UserController extends Controller
                 ->with('error', 'Erro ao atualizar usuário: ' . $e->getMessage());
         }
     }
-}
+
+    // Novo método para atualizar role via AJAX
+    public function updateRole(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        if ($user->email === 'admin@biblioteca.com') {
+            return response()->json([
+                'message' => 'O Administrador Principal não pode ter a role alterada.'
+            ], 403);
+        }
+
+        $roleName = $request->role;
+        if ($roleName) {
+            $user->syncRoles([$roleName]);
+        }
+
+        return response()->json(['message' => 'Papel do usuário atualizado com sucesso.']);
+    }
+
+    // Método destroy ajustado
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+    
+        // Bloqueia a exclusão do Administrador Principal por outros usuários
+        if ($user->email === 'admin@biblioteca.com' && auth()->id() !== $user->id) {
+            return redirect()->route('users.index')
+                ->with('error', 'O Administrador Principal não pode ser editado.');
+        }
+    
+        try {
+            $user->delete();
+            return redirect()->route('users.index')
+                ->with('success', 'Usuário excluído com sucesso!');
+        } catch (\Exception $e) {
+            return redirect()->route('users.index')
+                ->with('error', 'Erro ao excluir usuário: ' . $e->getMessage());
+        }
+    }
+}    
