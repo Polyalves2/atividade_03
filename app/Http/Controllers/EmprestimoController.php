@@ -2,60 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Emprestimo;
-use App\Models\Livro;
+use App\Models\Borrowing; // Usando o modelo Borrowing (Empréstimo)
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class EmprestimoController extends Controller
+class BorrowingController extends Controller
 {
-    public function index()
+    /**
+     * Registra a devolução de um empréstimo
+     */
+    public function returnBook($id)
     {
-        $emprestimos = Emprestimo::with(['livro', 'user'])->get();
-        return view('emprestimos.index', compact('emprestimos'));
-    }
-
-    public function create()
-    {
-        $livros = Livro::all();
-        $users = User::all();
-        return view('emprestimos.create', compact('livros', 'users'));
-    }
-
-    public function store(Request $request)
-    {
-        // Validação básica
-        $request->validate([
-            'livro_id' => 'required|exists:livros,id',
-            'user_id' => 'required|exists:users,id',
-        ]);
-
-        // Funcionalidade 9: Verificar se livro já está emprestado
-        $livroJaEmprestado = Emprestimo::where('livro_id', $request->livro_id)
-            ->whereNull('data_devolucao')
-            ->exists();
-
-        if ($livroJaEmprestado) {
-            return back()->with('error', 'Este livro já está emprestado e não pode ser emprestado novamente.');
+        $borrowing = Borrowing::findOrFail($id);
+        
+        // Verifica se já foi devolvido
+        if ($borrowing->returned_at) {
+            return redirect()->back()
+                ->with('error', 'Este livro já foi devolvido.');
         }
 
-        // Criar o empréstimo
-        Emprestimo::create([
-            'livro_id' => $request->livro_id,
-            'user_id' => $request->user_id,
-            'data_emprestimo' => now(),
+        // Atualiza a devolução
+        $borrowing->update([
+            'returned_at' => now(),
+            'status' => 'returned'
         ]);
 
-        return redirect()->route('emprestimos.index')
-            ->with('success', 'Empréstimo realizado com sucesso!');
-    }
+        // Verifica atraso
+        $expectedReturn = Carbon::parse($borrowing->borrowed_at)->addDays(15);
+        $daysLate = now()->diffInDays($expectedReturn, false);
 
-    public function devolver($id)
-    {
-        $emprestimo = Emprestimo::findOrFail($id);
-        $emprestimo->data_devolucao = now();
-        $emprestimo->save();
+        // Aplica multa se houver atraso
+        if ($daysLate < 0) {
+            $fine = abs($daysLate) * 0.5; // R$ 0,50 por dia de atraso
+            
+            User::where('id', $borrowing->user_id)
+                ->increment('debit', $fine);
+            
+            return redirect()->back()
+                ->with('warning', "Livro devolvido com atraso de ".abs($daysLate)." dias. Multa de R$ ".number_format($fine, 2)." aplicada.");
+        }
 
-        return back()->with('success', 'Livro devolvido com sucesso!');
+        return redirect()->back()
+            ->with('success', 'Livro devolvido com sucesso.');
     }
 }
