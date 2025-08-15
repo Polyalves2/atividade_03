@@ -2,15 +2,15 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\BooksControllerApi;
 use App\Models\User;
 
 Route::middleware('auth:api')->group(function () {
-    // Rota de verificação do usuário
+
+    // Rota para verificar dados do usuário
     Route::get('/users/{id}/verify', function ($id) {
         try {
             $user = User::with('roles')->findOrFail($id);
-            
             return response()->json([
                 'matches' => true,
                 'database_data' => [
@@ -21,7 +21,6 @@ Route::middleware('auth:api')->group(function () {
                 ],
                 'server_timestamp' => now()->toDateTimeString()
             ]);
-            
         } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'matches' => false,
@@ -29,4 +28,7 @@ Route::middleware('auth:api')->group(function () {
             ], 404);
         }
     });
+
+    // Rotas CRUD da API de livros usando o novo controlador
+    Route::apiResource('books', BooksControllerApi::class);
 });
