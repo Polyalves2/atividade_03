@@ -20,12 +20,13 @@ class BorrowingController extends Controller
      */
     public function store(Request $request, Book $book)
     {
+        // Valida o usuário
         $validated = $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
 
         $userId = $request->user_id;
-        $user = User::find($userId);
+        $user = User::findOrFail($userId);
 
         // Verifica se o livro já está emprestado
         $openBorrowing = Borrowing::where('book_id', $book->id)
@@ -41,7 +42,7 @@ class BorrowingController extends Controller
             return redirect()->back()->with('error', 'O usuário possui débitos pendentes e não pode realizar empréstimos.');
         }
 
-        // Limite de 5 livros por usuário
+        // Limite de 5 livros ativos por usuário
         $activeBorrowings = Borrowing::where('user_id', $userId)
             ->whereNull('returned_at')
             ->count();
@@ -50,7 +51,7 @@ class BorrowingController extends Controller
             return redirect()->back()->with('error', 'O usuário já possui 5 livros emprestados.');
         }
 
-        // Cria o empréstimo
+        // Cria o empréstimo dentro de uma transação
         DB::transaction(function () use ($userId, $book) {
             Borrowing::create([
                 'user_id' => $userId,
